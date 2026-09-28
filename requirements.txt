@@ -1,10 +1,7 @@
-Set-Content -Path "requirements.txt" -Value @"
 streamlit
 pandas
 numpy
 plotly
-openpyxl
-scikit-learn
 matplotlib
 jinja2
-"@
+openpyxl
