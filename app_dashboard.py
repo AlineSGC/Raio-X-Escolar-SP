@@ -231,8 +231,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Função para carregar dataset consolidado e base de conhecimento de DREs
+def _assinatura_arquivos():
+    """Gera chave de cache baseada no conteúdo dos CSVs, para invalidar o cache
+    sempre que os dados (ex.: mapeamento de DREs) forem atualizados."""
+    import hashlib
+    h = hashlib.md5()
+    for f in ('dados_escolas_dashboard_sp.csv', 'mapeamento_dres_sp.csv'):
+        if os.path.exists(f):
+            with open(f, 'rb') as fh:
+                h.update(fh.read())
+    return h.hexdigest()
+
 @st.cache_data
-def carregar_dados():
+def carregar_dados(versao=None):
     caminhos = [
         'dados_escolas_dashboard_sp.csv',
         'resultados_efeito_escola_2023.csv',
@@ -264,7 +275,7 @@ def carregar_dados():
 
     return df
 
-df = carregar_dados()
+df = carregar_dados(_assinatura_arquivos())
 
 # Garantir colunas essenciais ou valores fallback
 colunas_acionaveis = {
