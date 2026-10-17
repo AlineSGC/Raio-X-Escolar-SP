@@ -48,9 +48,31 @@ st.markdown("""
         --primary: #1E3A8A;
         --secondary: #0284C7;
         --accent: #0D9488;
-        --bg-card: #F8FAFC;
-        --border-card: #E2E8F0;
+        --bg-card: rgba(148, 163, 184, 0.08);
+        --border-card: rgba(148, 163, 184, 0.28);
+        --text-muted: #7C8BA1;
+        --c-blue: #3B82F6;
+        --c-sky: #0EA5E9;
+        --c-teal: #14B8A6;
+        --c-slate: #8B9BB0;
+        --c-amber: #D97706;
     }
+
+    /* Tabela dos tópicos do plano de ação: todas as linhas com o mesmo padrão */
+    .plan-table { width:100%; font-size:0.9rem; border-collapse:collapse; margin-top:8px; color: inherit; }
+    .plan-table tr { border-bottom: 1px solid var(--border-card); }
+    .plan-table tr:last-child { border-bottom: none; }
+    .plan-table td { padding: 8px 0; color: inherit; vertical-align: top; }
+    .plan-table td.lbl { width: 28%; font-weight: 700; padding-right: 12px; }
+
+    /* Caixa explicativa (aba Rede) */
+    .info-box {
+        background: rgba(59, 130, 246, 0.08);
+        border-left: 5px solid var(--c-blue);
+        padding: 18px; border-radius: 8px; margin-bottom: 20px; color: inherit;
+    }
+    .info-box h4 { color: var(--c-blue); margin-top: 0; }
+    .info-box p, .info-box ul { color: inherit; line-height: 1.6; }
 
     /* Card do Tutorial Onboarding */
     .tutorial-container {
@@ -102,7 +124,7 @@ st.markdown("""
 
     /* Cards Executivos */
     .metric-card {
-        background-color: #FFFFFF;
+        background-color: var(--bg-card);
         border: 1px solid var(--border-card);
         border-radius: 12px;
         padding: 20px;
@@ -117,7 +139,7 @@ st.markdown("""
     .metric-title {
         font-size: 0.85rem;
         font-weight: 600;
-        color: #64748B;
+        color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: 6px;
@@ -125,23 +147,24 @@ st.markdown("""
     .metric-value {
         font-size: 2.1rem;
         font-weight: 700;
-        color: #0F172A;
+        color: inherit;
     }
     .metric-subtitle {
         font-size: 0.85rem;
         font-weight: 500;
+        color: var(--text-muted);
         margin-top: 6px;
     }
     .badge-pos {
-        background-color: #DCFCE7;
-        color: #15803D;
+        background-color: rgba(16, 185, 129, 0.18);
+        color: #10B981;
         padding: 4px 10px;
         border-radius: 20px;
         font-weight: 600;
     }
     .badge-neg {
-        background-color: #FEE2E2;
-        color: #B91C1C;
+        background-color: rgba(239, 68, 68, 0.18);
+        color: #EF4444;
         padding: 4px 10px;
         border-radius: 20px;
         font-weight: 600;
@@ -149,7 +172,11 @@ st.markdown("""
 
     /* Cards de Recomendação Pedagógica e Comunitária */
     .action-card {
-        background: #FFFFFF;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border-card);
+        border-right: 1px solid var(--border-card);
+        border-bottom: 1px solid var(--border-card);
+        color: inherit;
         border-left: 5px solid #0284C7;
         border-radius: 8px;
         padding: 16px 20px;
@@ -163,7 +190,7 @@ st.markdown("""
     .action-title {
         font-size: 1.05rem;
         font-weight: 700;
-        color: #1E293B;
+        color: inherit;
         margin-bottom: 6px;
     }
     .action-tag {
@@ -175,9 +202,9 @@ st.markdown("""
         text-transform: uppercase;
         margin-bottom: 8px;
     }
-    .tag-danger { background-color: #FEE2E2; color: #991B1B; }
-    .tag-warning { background-color: #FEF3C7; color: #92400E; }
-    .tag-success { background-color: #D1FAE5; color: #065F46; }
+    .tag-danger { background-color: rgba(239, 68, 68, 0.18); color: #EF4444; }
+    .tag-warning { background-color: rgba(245, 158, 11, 0.18); color: #F59E0B; }
+    .tag-success { background-color: rgba(16, 185, 129, 0.18); color: #10B981; }
 
     /* Cabeçalho da Aplicação */
     .main-header {
@@ -405,9 +432,10 @@ if st.session_state.tutorial_aberto:
 # ==============================================================================
 # TABs PRINCIPAIS DO DASHBOARD
 # ==============================================================================
-tab_diag, tab_rede = st.tabs([
+tab_diag, tab_rede, tab_dre = st.tabs([
     "🎯 Diagnóstico Pedagógico, Efeito-Escola & Plano Comunitário",
-    "📊 Visão Geral da Rede Municipal & Explicabilidade do Modelo (R²)"
+    "📊 Visão Geral da Rede Municipal & Explicabilidade do Modelo (R²)",
+    "🏛️ Relatório da Diretoria de Ensino (DRE)"
 ])
 
 # ==============================================================================
@@ -435,8 +463,8 @@ with tab_diag:
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">IDEB Real 2023</div>
-            <div class="metric-value" style="color:#1E3A8A;">{dados_escola['VL_OBSERVADO_2023']:.2f}</div>
-            <div class="metric-subtitle" style="color:#475569;">Nota Observada oficial no INEP</div>
+            <div class="metric-value" style="color:var(--c-blue);">{dados_escola['VL_OBSERVADO_2023']:.2f}</div>
+            <div class="metric-subtitle">Nota Observada oficial no INEP</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -444,8 +472,8 @@ with tab_diag:
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">IDEB Esperado Social</div>
-            <div class="metric-value" style="color:#0284C7;">{dados_escola['IDEB_PREDITO_SOCIAL']:.2f}</div>
-            <div class="metric-subtitle" style="color:#475569;">Expectativa pelo Perfil Socio-Territorial</div>
+            <div class="metric-value" style="color:var(--c-sky);">{dados_escola['IDEB_PREDITO_SOCIAL']:.2f}</div>
+            <div class="metric-subtitle">Expectativa pelo Perfil Socio-Territorial</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -462,8 +490,8 @@ with tab_diag:
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">Classificação DRE</div>
-            <div class="metric-value" style="color:#0D9488;">{pos_dre}º <span style="font-size:1.1rem; color:#64748B;">/ {total_dre}</span></div>
-            <div class="metric-subtitle" style="color:#475569;">Rede SP: {pos_rede}º lugar de {total_rede}</div>
+            <div class="metric-value" style="color:var(--c-teal);">{pos_dre}º <span style="font-size:1.1rem; color:var(--text-muted);">/ {total_dre}</span></div>
+            <div class="metric-subtitle">Rede SP: {pos_rede}º lugar de {total_rede}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -502,7 +530,7 @@ with tab_diag:
             theta=categories + [categories[0]],
             fill='toself',
             name=f"Escola: {dados_escola['NO_ESCOLA'][:25]}...",
-            line=dict(color='#1E3A8A', width=3)
+            line=dict(color='#3B82F6', width=3)
         ))
         fig_radar.add_trace(go.Scatterpolar(
             r=val_dre + [val_dre[0]],
@@ -515,7 +543,7 @@ with tab_diag:
             r=val_rede + [val_rede[0]],
             theta=categories + [categories[0]],
             name="Média Rede Municipal SP",
-            line=dict(color='#64748B', width=1.5, dash='dot')
+            line=dict(color='#94A3B8', width=1.5, dash='dot')
         ))
 
         fig_radar.update_layout(
@@ -526,6 +554,7 @@ with tab_diag:
             height=430,
             margin=dict(l=40, r=40, t=30, b=30)
         )
+        fig_radar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(fig_radar, use_container_width=True)
 
     with col_chart2:
@@ -556,6 +585,7 @@ with tab_diag:
             margin=dict(l=20, r=20, t=30, b=30)
         )
         fig_bar.update_traces(textposition='outside')
+        fig_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(fig_bar, use_container_width=True)
 
     st.markdown("---")
@@ -713,12 +743,12 @@ with tab_diag:
                 st.markdown(f"""
                 <span class="action-tag {rec['tag_cls']}">{rec['tag']}</span>
                 <br>
-                <table style="width:100%; font-size:0.9rem; border-collapse:collapse; margin-top:8px;">
-                    <tr style="border-bottom: 1px solid #E2E8F0;"><td style="width:28%; font-weight:bold; color:#1E3A8A; padding:8px 0;">🚀 Meta de Curto Prazo (30 dias):</td><td style="padding:8px 0;">{rec['curto_prazo']}</td></tr>
-                    <tr style="border-bottom: 1px solid #E2E8F0;"><td style="font-weight:bold; color:#0284C7; padding:8px 0;">🏫 Formação Coletiva (JEIF/PEA):</td><td style="padding:8px 0;">{rec['jeif_pea']}</td></tr>
-                    <tr style="border-bottom: 1px solid #E2E8F0;"><td style="font-weight:bold; color:#0D9488; padding:8px 0;">📋 Ferramentas & Instrumentos:</td><td style="padding:8px 0;">{rec['ferramentas']}</td></tr>
-                    <tr style="border-bottom: 1px solid #E2E8F0;"><td style="font-weight:bold; color:#475569; padding:8px 0;">👥 Responsabilidades Internas:</td><td style="padding:8px 0;">{rec['responsaveis']}</td></tr>
-                    <tr><td style="font-weight:bold; color:#B45309; padding:8px 0;">🌐 Extensão Comunidade & Família (Impacto Social):</td><td style="padding:8px 0; font-weight:500; color:#1E293B;">{rec['comunidade']}</td></tr>
+                <table class="plan-table">
+                    <tr><td class="lbl" style="color:var(--c-blue);">🚀 Meta de Curto Prazo (30 dias):</td><td>{rec['curto_prazo']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-sky);">🏫 Formação Coletiva (JEIF/PEA):</td><td>{rec['jeif_pea']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-teal);">📋 Ferramentas & Instrumentos:</td><td>{rec['ferramentas']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-slate);">👥 Responsabilidades Internas:</td><td>{rec['responsaveis']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-amber);">🌐 Extensão Comunidade & Família (Impacto Social):</td><td>{rec['comunidade']}</td></tr>
                 </table>
                 """, unsafe_allow_html=True)
 
@@ -826,6 +856,17 @@ with tab_diag:
     href = f'<a href="data:text/html;base64,{b64}" download="Relatorio_Diagnostico_{int(dados_escola["ID_ESCOLA"])}.html" class="button" style="background-color:#1E3A8A; color:white; padding:10px 20px; border-radius:6px; text-decoration:none; font-weight:600;">📥 Baixar Relatório Executivo Completo com Gráficos (HTML/PDF)</a>'
     st.markdown(href, unsafe_allow_html=True)
 
+    st.markdown("""
+<div style='margin-top:20px; padding:16px; background:rgba(59,130,246,0.08); border-left:4px solid #3B82F6; border-radius:8px;'>
+    <strong>💬 Deixe seu Feedback sobre esta Ferramenta</strong><br>
+    <small>Sua opinião nos ajuda a melhorar o sistema para toda a rede municipal.</small>
+    <br><br>
+    <a href='https://forms.gle/FORMULARIO_PLACEHOLDER' target='_blank' style='background:#1E3A8A; color:white; padding:8px 16px; border-radius:6px; text-decoration:none; font-weight:600;'>📝 Responder Questionário de Feedback (2 minutos)</a>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown('---')
+
 
 # ==============================================================================
 # TAB 2: VISÃO GERAL DA REDE & MODELO PREDITIVO
@@ -836,19 +877,19 @@ with tab_rede:
 
     # CAIXA EXPLICATIVA DOS FATORES SOCIAIS E TERRITORIAIS (DRE)
     st.markdown("""
-    <div style="background-color: #EFF6FF; border-left: 5px solid #1E3A8A; padding: 18px; border-radius: 8px; margin-bottom: 20px;">
-        <h4 style="color: #1E3A8A; margin-top:0;">📚 Quais são os Fatores Sociais e Territoriais (DRE) que explicam ~90,78% do IDEB?</h4>
-        <p style="font-size: 0.95rem; color: #334155; line-height: 1.6;">
+    <div class="info-box">
+        <h4>📚 Quais são os Fatores Sociais e Territoriais (DRE) que explicam ~90,78% do IDEB?</h4>
+        <p style="font-size: 0.95rem;">
             O modelo <strong>Baseline Socio-Territorial</strong> utiliza a base de conhecimento das 13 DREs e 14 variáveis socioeconômicas e familiares do <strong>INSE/INEP</strong> e do questionário contextual do <strong>SAEB 2023</strong>:
         </p>
-        <ul style="font-size: 0.9rem; color: #1E293B; line-height: 1.6;">
+        <ul style="font-size: 0.9rem;">
             <li><strong>Território & DRE (Vulnerabilidade Espacial):</strong> Mapeamento oficial de cada escola entre as 13 DREs da cidade para incorporar o contexto territorial e de vulnerabilidade periférica.</li>
             <li><strong>Indicador Socioeconômico (INSE):</strong> % de estudantes nas faixas de Vulnerabilidade, Médio-Baixo, Médio-Alto e Alta Renda.</li>
             <li><strong>Escolaridade dos Pais:</strong> % de Mães com Baixa Escolaridade (Fundamental Incompleto), % de Pais com Baixa Escolaridade e % de Mães com Ensino Superior Completo.</li>
             <li><strong>Infraestrutura Familiar & Tecnologia:</strong> % de famílias Sem Computador, % com acesso a Wi-Fi em Casa e % com Celular com Internet.</li>
             <li><strong>Estrutura Familiar & Demografia:</strong> % de Famílias Grandes (5+ moradores), Quantidade de Alunos Avaliados no INSE, % de Alunos Pretos/Pardos e % Sexo Feminino.</li>
         </ul>
-        <p style="font-size: 0.9rem; color: #0F172A; font-weight: 600; margin-bottom: 0;">
+        <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0;">
             💡 <em>Por que considerar a DRE como fator socio-territorial?</em> A localização geográfica reflete a infraestrutura do bairro, acesso a transporte, saneamento e equipamentos públicos de cultura. O modelo ajusta a expectativa inicial por DRE para isolar o que é <strong>mérito exclusivo da gestão escolar e pedagógica (+1,29% de ganho líquido)</strong>.
         </p>
     </div>
@@ -886,9 +927,10 @@ with tab_rede:
         )
         fig_scatter.add_shape(
             type="line", x0=4.0, y0=4.0, x1=7.5, y1=7.5,
-            line=dict(color="#475569", width=2, dash="dash")
+            line=dict(color="#94A3B8", width=2, dash="dash")
         )
         fig_scatter.update_layout(height=480)
+        fig_scatter.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(fig_scatter, use_container_width=True)
 
     with col_macro2:
@@ -936,7 +978,430 @@ with tab_rede:
         labels={'Efeito-Escola Médio': 'Saldo do Efeito-Escola Médio'}
     )
     fig_dre_bar.update_layout(height=400)
+    fig_dre_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     st.plotly_chart(fig_dre_bar, use_container_width=True)
+
+
+# ==============================================================================
+# TAB 3: RELATÓRIO DA DIRETORIA REGIONAL DE ENSINO (DRE)
+# ==============================================================================
+with tab_dre:
+    st.subheader("🏛️ Relatório Estratégico da Diretoria Regional de Educação (DRE)")
+    st.caption("Visão territorial integrada, acompanhamento de escolas prioritárias e diagnóstico dos 10 fatores acionáveis.")
+
+    # 1. Seleção de DRE no topo da aba
+    lista_dres_ativas = sorted([d for d in df['DRE'].dropna().unique() if d != 'Todas as DREs'])
+    
+    col_dre_sel1, col_dre_sel2 = st.columns([2, 1])
+    with col_dre_sel1:
+        dre_gestor = st.selectbox(
+            "🏢 Selecione a Diretoria Regional de Educação (DRE):",
+            lista_dres_ativas,
+            key="dre_gestor_select"
+        )
+    with col_dre_sel2:
+        df_dre_view = df[df['DRE'] == dre_gestor].copy()
+        st.markdown(f"<div style='padding-top:28px; font-weight:600; color:var(--c-blue);'>Total de Unidades na DRE: {len(df_dre_view)} escolas</div>", unsafe_allow_html=True)
+
+    # 2. Cards de Resumo Executivo da DRE (4 colunas)
+    qtd_escolas_dre = len(df_dre_view)
+    ideb_medio_real_dre = df_dre_view['VL_OBSERVADO_2023'].mean()
+    ideb_medio_esp_dre = df_dre_view['IDEB_PREDITO_SOCIAL'].mean()
+    efeito_escola_medio_dre = df_dre_view['RESIDUO_EFEITO_ESCOLA'].mean()
+    
+    escolas_abaixo_dre = df_dre_view[df_dre_view['RESIDUO_EFEITO_ESCOLA'] < -0.10]
+    pct_abaixo_dre = (len(escolas_abaixo_dre) / qtd_escolas_dre * 100) if qtd_escolas_dre > 0 else 0.0
+
+    badge_efeito_dre = (
+        f"<span class='badge-pos'>+{efeito_escola_medio_dre:.2f} (Superação Territorial)</span>"
+        if efeito_escola_medio_dre >= 0
+        else f"<span class='badge-neg'>{efeito_escola_medio_dre:.2f} (Abaixo do Esperado)</span>"
+    )
+    cor_alerta_pct = "#EF4444" if pct_abaixo_dre > 20 else ("#F59E0B" if pct_abaixo_dre > 10 else "#10B981")
+
+    col_dre1, col_dre2, col_dre3, col_dre4 = st.columns(4)
+    with col_dre1:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-title">Qtd de Escolas na DRE</div>
+            <div class="metric-value" style="color:var(--c-blue);">{qtd_escolas_dre}</div>
+            <div class="metric-subtitle">Unidades com Anos Iniciais (5º Ano)</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_dre2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-title">IDEB Médio Real da DRE</div>
+            <div class="metric-value" style="color:var(--c-sky);">{ideb_medio_real_dre:.2f}</div>
+            <div class="metric-subtitle">Expectativa Social: {ideb_medio_esp_dre:.2f}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_dre3:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-title">Efeito-Escola Médio da DRE</div>
+            <div class="metric-value">{efeito_escola_medio_dre:+.2f}</div>
+            <div class="metric-subtitle">{badge_efeito_dre}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_dre4:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-title">% Escolas Abaixo do Esperado</div>
+            <div class="metric-value" style="color:{cor_alerta_pct};">{pct_abaixo_dre:.1f}%</div>
+            <div class="metric-subtitle">{len(escolas_abaixo_dre)} de {qtd_escolas_dre} escolas (Resíduo &lt; -0.10)</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # 3. Painel de Alertas — Escolas com RESIDUO_EFEITO_ESCOLA < -0.20
+    st.markdown("### 🚨 Painel de Alertas: Escolas que Precisam de Atenção Imediata")
+    st.caption("Unidades com Efeito-Escola crítico (Resíduo < -0.20) que demandam intervenção e suporte prioritário da DRE")
+    
+    df_alertas_dre = df_dre_view[df_dre_view['RESIDUO_EFEITO_ESCOLA'] < -0.20].sort_values(
+        by='RESIDUO_EFEITO_ESCOLA', ascending=True
+    ).copy()
+    
+    if len(df_alertas_dre) > 0:
+        st.warning(f"⚠️ **Atenção Gestor(a):** Foram identificadas **{len(df_alertas_dre)} escolas** com desempenho substancialmente abaixo da expectativa socio-territorial.")
+        df_alertas_tabela = pd.DataFrame({
+            'Status': ['🚨 Atenção Imediata'] * len(df_alertas_dre),
+            'Nome da Escola': df_alertas_dre['NO_ESCOLA'],
+            'IDEB Real': df_alertas_dre['VL_OBSERVADO_2023'].map(lambda x: f"{x:.2f}"),
+            'IDEB Esperado': df_alertas_dre['IDEB_PREDITO_SOCIAL'].map(lambda x: f"{x:.2f}"),
+            'Resíduo (Efeito-Escola)': df_alertas_dre['RESIDUO_EFEITO_ESCOLA'].map(lambda x: f"{x:+.2f}")
+        })
+        st.dataframe(df_alertas_tabela, use_container_width=True, hide_index=True)
+    else:
+        st.success("🎉 **Excelente notícia para a DRE!** Nenhuma escola desta diretoria possui resíduo crítico (< -0.20). Todas as unidades mantêm rendimento compatível ou superior à sua expectativa socioeconômica.")
+
+    st.markdown("---")
+
+    # 4. Heatmap de Indicadores (10 indicadores acionáveis nas colunas, escolas nas linhas)
+    st.markdown("### 🗺️ Heatmap de Indicadores Pedagógicos e Comunitários por Escola")
+    st.caption("Adesão percentual aos 10 fatores acionáveis: Escala de Vermelho (baixa adesão) a Verde (alta adesão)")
+
+    indicadores_10 = [
+        ('PC_ROTINA_ESTUDO', 'Rotina Estudos'),
+        ('PC_INCENTIVO_TAREFA', 'Incentivo Tarefa'),
+        ('PC_INCENTIVO_PRESENCA', 'Cobrança Presença'),
+        ('PC_CLAREZA_METAS_DOCENTE', 'Clareza Metas'),
+        ('PC_SONDAGEM_PREVIA', 'Sondagem Prévia'),
+        ('PC_METODOLOGIAS_ATIVAS', 'Metodol. Ativas'),
+        ('PC_INTERESSE_AULAS', 'Interesse Aulas'),
+        ('PC_EXPECTATIVA_DOCENTE', 'Expectativa Docente'),
+        ('PC_MOTIVACAO_ESTUDOS', 'Motivação Estudos'),
+        ('PC_SENTE_SEGURO_ESCOLA', 'Segurança Escola')
+    ]
+
+    colunas_vars = [item[0] for item in indicadores_10]
+    colunas_nomes = [item[1] for item in indicadores_10]
+
+    df_dre_hm = df_dre_view.sort_values(by='NO_ESCOLA', ascending=True).copy()
+    matriz_valores = (df_dre_hm[colunas_vars] * 100).round(1).values
+    nomes_escolas = df_dre_hm['NO_ESCOLA'].tolist()
+
+    fig_heatmap_dre = go.Figure(data=go.Heatmap(
+        z=matriz_valores,
+        x=colunas_nomes,
+        y=nomes_escolas,
+        colorscale='RdYlGn',
+        zmin=20,
+        zmax=100,
+        colorbar=dict(title="Adesão (%)", ticksuffix="%"),
+        hovertemplate="<b>Escola:</b> %{y}<br><b>Indicador:</b> %{x}<br><b>Adesão:</b> %{z:.1f}%<extra></extra>"
+    ))
+    
+    altura_hm = max(450, len(nomes_escolas) * 22)
+    fig_heatmap_dre.update_layout(
+        height=altura_hm,
+        margin=dict(l=220, r=40, t=30, b=60),
+        xaxis=dict(tickangle=-30),
+        yaxis=dict(autorange="reversed")
+    )
+    fig_heatmap_dre.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+    st.plotly_chart(fig_heatmap_dre, use_container_width=True)
+
+    st.markdown("---")
+
+    # 5. Top 5 Referências e Top 5 Atenção — duas tabelas lado a lado
+    st.markdown("### 🏆 Referências de Valor Agregado vs. Unidades Prioritárias")
+    st.caption("Comparação entre os polos de alta superação e as unidades que mais necessitam de suporte na DRE")
+
+    col_ref, col_ate = st.columns(2)
+
+    with col_ref:
+        st.markdown("#### 🌟 Top 5 Referências (Maior Valor Agregado)")
+        st.caption("Escolas com maior Efeito-Escola positivo (Superação do Perfil Social)")
+        top5_ref = df_dre_view.sort_values(by='RESIDUO_EFEITO_ESCOLA', ascending=False).head(5)[
+            ['NO_ESCOLA', 'VL_OBSERVADO_2023', 'IDEB_PREDITO_SOCIAL', 'RESIDUO_EFEITO_ESCOLA']
+        ].copy()
+        top5_ref.columns = ['Escola', 'IDEB Real', 'IDEB Esperado', 'Efeito-Escola']
+        st.dataframe(
+            top5_ref.style.format({
+                'IDEB Real': '{:.2f}',
+                'IDEB Esperado': '{:.2f}',
+                'Efeito-Escola': '+{:.2f}'
+            }).background_gradient(subset=['Efeito-Escola'], cmap='Greens'),
+            use_container_width=True,
+            hide_index=True
+        )
+
+    with col_ate:
+        st.markdown("#### ⚠️ Top 5 Atenção (Menor Valor Agregado)")
+        st.caption("Escolas com maior urgência de suporte pedagógico na DRE")
+        top5_ate = df_dre_view.sort_values(by='RESIDUO_EFEITO_ESCOLA', ascending=True).head(5)[
+            ['NO_ESCOLA', 'VL_OBSERVADO_2023', 'IDEB_PREDITO_SOCIAL', 'RESIDUO_EFEITO_ESCOLA']
+        ].copy()
+        top5_ate.columns = ['Escola', 'IDEB Real', 'IDEB Esperado', 'Efeito-Escola']
+        st.dataframe(
+            top5_ate.style.format({
+                'IDEB Real': '{:.2f}',
+                'IDEB Esperado': '{:.2f}',
+                'Efeito-Escola': '{:+.2f}'
+            }).background_gradient(subset=['Efeito-Escola'], cmap='Reds_r'),
+            use_container_width=True,
+            hide_index=True
+        )
+
+    st.markdown("---")
+
+    # 6. Ações Recomendadas para a DRE — baseado nos gargalos sistêmicos
+    st.markdown("### 🎯 Ações Recomendadas para a Gestão da DRE")
+    st.caption("Diretrizes de intervenção gerencial baseadas nos gargalos sistêmicos (onde Média da DRE < Média da Rede Municipal)")
+
+    acoes_gerenciais_dre = {
+        'PC_ROTINA_ESTUDO': {
+            'titulo': 'Seminário Regional de Rotina de Estudos Extraclasse e Lição de Casa',
+            'categoria': 'Acompanhamento Pedagógico & Autonomia',
+            'formacao': 'Organizar encontro regional da equipe de DIPED com os Coordenadores Pedagógicos para construir diretrizes comuns de lição de casa significativa e diário de autoestudo.',
+            'intercambio': 'Promover visitas técnicas dos coordenadores pedagógicos das escolas prioritárias às escolas do Top 5 Referência da DRE.',
+            'recursos': 'Articular parceria territorial com bibliotecas de CEUs, telecentros e centros comunitários para polos de estudos assistidos no contraturno escolar.',
+            'supervisao': 'Supervisão escolar acompanhar a efetividade dos registros de tarefas nos conselhos de classe e planos de aula.'
+        },
+        'PC_INCENTIVO_TAREFA': {
+            'titulo': 'Pacto Regional Família-Escola pelo Hábito de Estudos em Casa',
+            'categoria': 'Engajamento Familiar & Parceria',
+            'formacao': 'Oficina da DRE sobre comunicação acolhedora com os responsáveis, eliminando barreiras e jargões burocráticos.',
+            'intercambio': 'Compartilhar na rede da DRE os modelos de assembleias e reuniões participativas de sucesso desenvolvidos pelas escolas referência.',
+            'recursos': 'Produção de materiais e cards informativos impressos e digitais distribuídos para as famílias da região via canais da DRE e escolas.',
+            'supervisao': 'Orientar as unidades a realizarem reuniões temáticas e horários flexíveis de acolhimento aos responsáveis que trabalham.'
+        },
+        'PC_INCENTIVO_PRESENCA': {
+            'titulo': 'Força-Tarefa Intersetorial de Busca Ativa e Combate ao Absenteísmo',
+            'categoria': 'Frequência Escolar & Busca Ativa',
+            'formacao': 'Alinhamento com equipes gestoras sobre fluxo rápido de busca ativa imediata (acionamento formal já no 2º dia consecutivo de falta).',
+            'intercambio': 'Disseminação da metodologia de comitês de presença adotada nas escolas com menor índice de infrequência da diretoria.',
+            'recursos': 'Comitê Intersetorial Regional integrando DRE, Subprefeitura, CRAS, Unidades Básicas de Saúde (UBS) e Conselho Tutelar.',
+            'supervisao': 'Monitoramento semanal em painel de controle da supervisão dos índices de presença e casos reincidentes de evasão.'
+        },
+        'PC_CLAREZA_METAS_DOCENTE': {
+            'titulo': 'Ciclo Regional de Formação em Planejamento Reverso e Rubricas de Aprendizagem',
+            'categoria': 'Gestão Pedagógica & Currículo',
+            'formacao': 'Ciclo formativo conduzido pela DIPED/DRE com foco na explicitação clara das metas didáticas na lousa e matriz de objetivos da aula.',
+            'intercambio': 'Criação de um repositório compartilhado da DRE com matrizes de objetivos e rubricas bem-sucedidas do 5º ano.',
+            'recursos': 'Disponibilização de modelos de fichas de autoavaliação e murais formativos para todas as unidades da diretoria.',
+            'supervisao': 'Supervisores realizarem acompanhamentos periódicos das pautas de JEIF/PEA e dos instrumentos de avaliação formativa.'
+        },
+        'PC_SONDAGEM_PREVIA': {
+            'titulo': 'Padronização Regional da Avaliação Diagnóstica e Reagrupamento Produtivo',
+            'categoria': 'Avaliação Diagnóstica & Intervenção',
+            'formacao': 'Capacitação dos coordenadores pedagógicos na leitura pedagógica dos dados de sondagens para intervenção contínua e precoce.',
+            'intercambio': 'Rodas de diálogo entre professores alfabetizadores e de anos iniciais para troca de técnicas de diagnóstico inicial.',
+            'recursos': 'Fornecimento de cadernos estruturados de apoio e materiais pedagógicos manipuláveis para recuperação paralela.',
+            'supervisao': 'Pactuação de calendário de sondagens diagnósticas bimestrais com análise consolidada pela diretoria regional.'
+        },
+        'PC_METODOLOGIAS_ATIVAS': {
+            'titulo': 'Laboratório Regional de Metodologias Ativas e Aprendizagem Colaborativa',
+            'categoria': 'Inovação Didática & Metodologias Ativas',
+            'formacao': 'Workshops imersivos com formadores da DRE sobre estações de aprendizagem, trabalho em pequenos grupos e resolução de problemas.',
+            'intercambio': 'Aulas abertas e registros em vídeo das melhores práticas docentes da DRE para estudo coletivo em JEIF/PEA.',
+            'recursos': 'Alocação prioritária de kits de jogos educativos e acervos literários para as salas dos anos iniciais.',
+            'supervisao': 'Incentivo nos Projetos Especiais de Ação (PEA) para projetos práticos centrados no estudante como protagonista.'
+        },
+        'PC_INTERESSE_AULAS': {
+            'titulo': 'Programa de Diversificação Curricular e Dinamização Pedagógica',
+            'categoria': 'Engajamento Discente & Motivação',
+            'formacao': 'Formação interdisciplinar articulando leitura, ciências, tecnologia, artes e dinâmicas lúdicas no ciclo de consolidação.',
+            'intercambio': 'Visitas entre turmas e mostras escolares itinerantes nas unidades da diretoria regional.',
+            'recursos': 'Articulação de transporte para visitas culturais periódicas das turmas a teatros, museus, planetários e CEUs da cidade.',
+            'supervisao': 'Acompanhamento do clima e da adesão discente através de rodas de conversa e escuta de representantes de classe.'
+        },
+        'PC_EXPECTATIVA_DOCENTE': {
+            'titulo': 'Programa Regional de Valorização Docente e Cultura de Altas Expectativas',
+            'categoria': 'Clima Escolar & Mentalidade de Crescimento',
+            'formacao': 'Seminários com especialistas sobre superação do efeito pigmaleão, equidade pedagógica e crença inabalável no potencial dos estudantes.',
+            'intercambio': 'Encontros motivacionais entre equipes de escolas periféricas que romperam barreiras de vulnerabilidade com notas expressivas.',
+            'recursos': 'Apoio técnico da equipe multiprofissional do NAAPA (psicólogos e assistentes sociais) aos educadores.',
+            'supervisao': 'Fomento ao reconhecimento público das trajetórias e conquistas das unidades e dos docentes da rede local.'
+        },
+        'PC_MOTIVACAO_ESTUDOS': {
+            'titulo': 'Mostra Territorial dos Sonhos e Continuidade Escolar do 5º Ano',
+            'categoria': 'Projeto de Vida & Aspirações Futuras',
+            'formacao': 'Elaboração de sequências didáticas focadas na construção de identidade, autoconhecimento e expectativas de transição para o 6º ano.',
+            'intercambio': 'Encontros com estudantes dos Anos Finais (6º a 9º ano) e Ensino Médio de escolas vizinhas para relato de experiências.',
+            'recursos': 'Circuito de palestras inspiradoras nos auditórios da DRE/CEU com profissionais, atletas e artistas oriundos da própria periferia.',
+            'supervisao': 'Monitoramento da transição 5º -> 6º ano para zerar a evasão no ciclo subsequente.'
+        },
+        'PC_SENTE_SEGURO_ESCOLA': {
+            'titulo': 'Pacto Territorial pela Convivência Ética, Cultura de Paz e Entorno Seguro',
+            'categoria': 'Segurança, Acolhimento & Proteção',
+            'formacao': 'Formação continuada em Justiça Restaurativa, Comunicação Não-Violenta (CNV) e Mediação de Conflitos para gestores e professores.',
+            'intercambio': 'Integração das Comissões de Mediação de Conflitos das escolas da DRE para compartilhamento de protocolos de acolhimento.',
+            'recursos': 'Articulação com a Guarda Civil Metropolitana (Ronda Escolar) e lideranças de bairro para implementação do programa "Caminho Seguro".',
+            'supervisao': 'Apoio imediato às unidades escolares em casos de vulnerabilidade no entorno e implementação de protocolos de acolhimento.'
+        }
+    }
+
+    gargalos_sistemicos_dre = []
+    for var, nome in indicadores_10:
+        media_dre = df_dre_view[var].mean()
+        media_rede = df[var].mean()
+        if media_dre < media_rede:
+            diff_dre = (media_dre - media_rede) * 100
+            gargalos_sistemicos_dre.append((var, nome, media_dre * 100, media_rede * 100, diff_dre))
+
+    if not gargalos_sistemicos_dre:
+        st.success(f"🏆 **Excelência Territorial:** A {dre_gestor} apresenta índices iguais ou superiores à média de toda a Rede Municipal de SP em TODOS os 10 indicadores avaliados!")
+    else:
+        st.info(f"Identificamos **{len(gargalos_sistemicos_dre)} indicadores** onde a média da {dre_gestor} está abaixo da média da Rede Municipal. Ações gerenciais recomendadas:")
+        
+        for var, nome, m_dre, m_rede, diff in gargalos_sistemicos_dre:
+            acao_info = acoes_gerenciais_dre.get(var, {
+                'titulo': f'Plano Regional de Melhoria para {nome}',
+                'categoria': 'Gestão Pedagógica Regional',
+                'formacao': 'Organizar grupos de estudo coletivo com a equipe de formadores da DRE.',
+                'intercambio': 'Articular visitas entre coordenadores pedagógicos das escolas da DRE.',
+                'recursos': 'Garantir recursos prioritários e materiais didáticos de suporte.',
+                'supervisao': 'Acompanhamento sistemático pela supervisão escolar.'
+            })
+            
+            with st.expander(f"🔴 {acao_info['titulo']} (DRE: {m_dre:.1f}% vs. Rede SP: {m_rede:.1f}% | Desvio: {diff:+.1f}%)", expanded=True):
+                st.markdown(f"""
+                <span class="action-tag tag-warning">{acao_info['categoria']}</span>
+                <br>
+                <table class="plan-table">
+                    <tr><td class="lbl" style="color:var(--c-blue);">🏫 Formação Coletiva Regional:</td><td>{acao_info['formacao']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-teal);">🤝 Intercâmbio entre Escolas:</td><td>{acao_info['intercambio']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-amber);">📦 Alocação de Recursos & Território:</td><td>{acao_info['recursos']}</td></tr>
+                    <tr><td class="lbl" style="color:var(--c-sky);">🔍 Supervisão e Monitoramento:</td><td>{acao_info['supervisao']}</td></tr>
+                </table>
+                """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    # 7. Botão de Download do Relatório Executivo da DRE
+    st.markdown("### 📄 Exportação do Relatório Executivo da DRE (com Heatmap e Planos)")
+    
+    fig_heatmap_html = fig_heatmap_dre.to_html(include_plotlyjs='cdn', full_html=False)
+
+    alertas_html = ""
+    if len(df_alertas_dre) > 0:
+        alertas_html = "<table><thead><tr><th>Status</th><th>Nome da Escola</th><th>IDEB Real</th><th>IDEB Esperado</th><th>Resíduo (Efeito-Escola)</th></tr></thead><tbody>"
+        for _, row in df_alertas_dre.iterrows():
+            alertas_html += f"<tr><td><span style='color:#DC2626; font-weight:bold;'>🚨 Atenção Imediata</span></td><td>{row['NO_ESCOLA']}</td><td>{row['VL_OBSERVADO_2023']:.2f}</td><td>{row['IDEB_PREDITO_SOCIAL']:.2f}</td><td><b style='color:#DC2626;'>{row['RESIDUO_EFEITO_ESCOLA']:+.2f}</b></td></tr>"
+        alertas_html += "</tbody></table>"
+    else:
+        alertas_html = "<p style='color:#059669; font-weight:bold;'>✅ Nenhuma unidade escolar com resíduo crítico (< -0.20) identificada na diretoria.</p>"
+
+    top5_ref_html = "<table><thead><tr><th>Escola Referência</th><th>IDEB Real</th><th>IDEB Esperado</th><th>Efeito-Escola</th></tr></thead><tbody>"
+    for _, row in top5_ref.iterrows():
+        top5_ref_html += f"<tr><td>{row['Escola']}</td><td>{row['IDEB Real']}</td><td>{row['IDEB Esperado']}</td><td style='color:#059669; font-weight:bold;'>{row['Efeito-Escola']}</td></tr>"
+    top5_ref_html += "</tbody></table>"
+
+    top5_ate_html = "<table><thead><tr><th>Escola Prioritária</th><th>IDEB Real</th><th>IDEB Esperado</th><th>Efeito-Escola</th></tr></thead><tbody>"
+    for _, row in top5_ate.iterrows():
+        top5_ate_html += f"<tr><td>{row['Escola']}</td><td>{row['IDEB Real']}</td><td>{row['IDEB Esperado']}</td><td style='color:#DC2626; font-weight:bold;'>{row['Efeito-Escola']}</td></tr>"
+    top5_ate_html += "</tbody></table>"
+
+    acoes_dre_html = ""
+    if gargalos_sistemicos_dre:
+        for var, nome, m_dre, m_rede, diff in gargalos_sistemicos_dre:
+            acao_info = acoes_gerenciais_dre.get(var, {})
+            acoes_dre_html += f"""
+            <div class="rec-box">
+                <strong style="font-size:13px; color:#1E3A8A;">📌 {acao_info.get('titulo', nome)}</strong> 
+                <span style="font-size:11px; color:#DC2626;">(DRE: {m_dre:.1f}% vs. Rede SP: {m_rede:.1f}% | Desvio: {diff:+.1f}%)</span><br>
+                <div style="margin-top:6px;">
+                    <strong>• Formação Coletiva Regional:</strong> {acao_info.get('formacao', '-')}<br>
+                    <strong>• Intercâmbio de Escolas:</strong> {acao_info.get('intercambio', '-')}<br>
+                    <strong>• Alocação de Recursos & Território:</strong> {acao_info.get('recursos', '-')}<br>
+                    <strong>• Supervisão Escolar:</strong> {acao_info.get('supervisao', '-')}
+                </div>
+            </div>
+            """
+    else:
+        acoes_dre_html = "<p style='color:#059669; font-weight:bold;'>🏆 DRE com médias acima da rede municipal em todos os 10 indicadores.</p>"
+
+    html_report_dre = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Relatório Executivo da Diretoria Regional de Educação - {dre_gestor}</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 30px; color: #1E293B; line-height: 1.5; }}
+            h1 {{ color: #1E3A8A; font-size: 22px; margin-bottom: 4px; }}
+            .subtitle {{ color: #64748B; font-size: 13px; margin-bottom: 20px; }}
+            .card-grid {{ display: flex; gap: 15px; margin-bottom: 25px; }}
+            .card {{ background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px 18px; border-radius: 8px; flex: 1; text-align: center; }}
+            .card-title {{ font-size: 11px; color: #64748B; text-transform: uppercase; font-weight: bold; }}
+            .card-val {{ font-size: 20px; font-weight: bold; color: #0F172A; margin-top: 4px; }}
+            table {{ width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }}
+            th, td {{ border: 1px solid #CBD5E1; padding: 8px 12px; text-align: left; }}
+            th {{ background-color: #F1F5F9; color: #1E3A8A; font-weight: bold; }}
+            .rec-box {{ background: #EFF6FF; border-left: 4px solid #0284C7; padding: 12px 16px; margin-top: 14px; font-size: 12px; border-radius: 4px; }}
+            .chart-section {{ margin: 25px 0; padding: 15px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; }}
+            .grid-2col {{ display: flex; gap: 20px; margin-top: 15px; }}
+            .grid-col {{ flex: 1; }}
+        </style>
+    </head>
+    <body>
+        <h1>🏛️ RELATÓRIO EXECUTIVO ESTRATÉGICO DA DIRETORIA REGIONAL DE EDUCAÇÃO</h1>
+        <div class="subtitle">Diretoria Regional: <strong>{dre_gestor}</strong> | Total de Escolas Avaliadas: {qtd_escolas_dre} | Rede Municipal de SP</div>
+        
+        <div class="card-grid">
+            <div class="card"><div class="card-title">Qtd de Escolas</div><div class="card-val">{qtd_escolas_dre}</div></div>
+            <div class="card"><div class="card-title">IDEB Médio Real</div><div class="card-val">{ideb_medio_real_dre:.2f}</div></div>
+            <div class="card"><div class="card-title">IDEB Esperado Social</div><div class="card-val">{ideb_medio_esp_dre:.2f}</div></div>
+            <div class="card"><div class="card-title">Efeito-Escola Médio</div><div class="card-val">{efeito_escola_medio_dre:+.2f}</div></div>
+            <div class="card"><div class="card-title">% Abaixo Esperado (&lt; -0.10)</div><div class="card-val">{pct_abaixo_dre:.1f}%</div></div>
+        </div>
+
+        <h3>1. PAINEL DE ALERTAS: ESCOLAS QUE PRECISAM DE ATENÇÃO IMEDIATA</h3>
+        {alertas_html}
+
+        <h3>2. HEATMAP INTERATIVO DOS 10 INDICADORES ACIONÁVEIS</h3>
+        <div class="chart-section">
+            {fig_heatmap_html}
+        </div>
+
+        <h3>3. TOP 5 REFERÊNCIAS VS. TOP 5 UNIDADES PRIORITÁRIAS</h3>
+        <div class="grid-2col">
+            <div class="grid-col">
+                <h4 style="color:#059669; margin-bottom:5px;">🌟 Top 5 Referências (Maior Valor Agregado)</h4>
+                {top5_ref_html}
+            </div>
+            <div class="grid-col">
+                <h4 style="color:#DC2626; margin-bottom:5px;">⚠️ Top 5 Prioritárias (Menor Valor Agregado)</h4>
+                {top5_ate_html}
+            </div>
+        </div>
+
+        <h3>4. PLANO DE AÇÕES ESTRATÉGICAS E GERENCIAIS PARA A DRE</h3>
+        {acoes_dre_html}
+
+        <br><br>
+        <div style="font-size: 10px; color: #94A3B8; text-align: center;">Relatório gerado automaticamente pelo Sistema de Inteligência Preditiva do IDEB SP - Univesp 2023/2026.</div>
+    </body>
+    </html>
+    """
+
+    b64_dre = base64.b64encode(html_report_dre.encode()).decode()
+    dre_slug = re.sub(r'[^\w\-_]', '_', dre_gestor)
+    href_dre = f'<a href="data:text/html;base64,{b64_dre}" download="Relatorio_Executivo_{dre_slug}.html" class="button" style="background-color:#1E3A8A; color:white; padding:10px 20px; border-radius:6px; text-decoration:none; font-weight:600;">📥 Baixar Relatório Executivo da DRE (HTML/PDF)</a>'
+    st.markdown(href_dre, unsafe_allow_html=True)
 
 st.markdown("---")
 st.caption("Projetos Integradores UNIVESP 2023/2026 | Base de Conhecimento DRE & Sistema de Inteligência Preditiva do IDEB SP")
