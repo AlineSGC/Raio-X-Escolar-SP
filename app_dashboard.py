@@ -535,6 +535,11 @@ with tab_diag:
         st.markdown("### 🕸️ Radar de Desempenho dos Fatores Acionáveis")
         st.caption("Comparação percentual da escola contra a média da DRE e da Rede Municipal")
 
+        with st.expander("ℹ️ Como interpretar este gráfico"):
+            st.markdown("""**O que mostra:** A comparação percentual da escola contra a média da DRE e da Rede Municipal em diversos fatores pedagógicos e comportamentais.
+
+**Utilidade:** Permite visualizar de forma integrada o posicionamento da unidade escolar em múltiplos eixos, confrontando seu desempenho diretamente com as referências regionais e municipais.""")
+
         fig_radar = go.Figure()
         fig_radar.add_trace(go.Scatterpolar(
             r=val_escola + [val_escola[0]],
@@ -571,6 +576,11 @@ with tab_diag:
     with col_chart2:
         st.markdown("### 📊 Desvio em Relação à Média da Rede (%)")
         st.caption("Indicadores acima de 0% são fortalezas; abaixo de 0% exigem intervenção imediata")
+
+        with st.expander("ℹ️ Como interpretar este gráfico"):
+            st.markdown("""**O que mostra:** A diferença percentual exata (desvio) de cada indicador acionável da escola em relação à média da Rede SP, destacando que os indicadores acima de 0% são fortalezas e os abaixo de 0% exigem intervenção imediata.
+
+**Utilidade:** Direciona a gestão de forma prática e objetiva para identificar quais áreas precisam de atenção imediata e quais já estão consolidadas como pontos fortes da escola.""")
 
         diffs = [v_e - v_r for v_e, v_r in zip(val_escola, val_rede)]
         df_diff = pd.DataFrame({
@@ -912,6 +922,11 @@ with tab_rede:
         st.markdown("### IDEB Real vs. IDEB Esperado Social")
         st.caption("Tom Azul: Escolas que superam a expectativa | Tom Vermelho/Laranja: Escolas abaixo da expectativa")
 
+        with st.expander("ℹ️ Como interpretar este gráfico"):
+            st.markdown("""**O que mostra:** Um diagrama de dispersão onde cada ponto representa uma escola. O eixo vertical indica o IDEB Observado Real e o eixo horizontal mostra o IDEB Esperado com base no perfil socioeconômico e territorial (INSE, DRE, etc.). A linha diagonal representa a expectativa neutra. A coloração dos pontos (tons de azul para quem supera a expectativa; vermelho/laranja para quem fica abaixo) reflete o Efeito-Escola (Resíduo).
+
+**Utilidade:** Ajuda a isolar o mérito da gestão pedagógica da realidade socioeconômica, destacando quais unidades escolares estão gerando maior valor agregado diante do contexto social em que estão inseridas.""")
+
         # Escala de cores invertida conforme pedido: Azul para resíduo positivo (superam) e Vermelho/Laranja para resíduo negativo (abaixo)
         custom_colorscale = [
             [0.0, '#EF4444'],   # Vermelho Intenso (Abaixo)
@@ -965,6 +980,12 @@ with tab_rede:
     st.markdown("---")
     
     st.markdown("### 🏬 Comparativo do Efeito-Escola Médio por Diretoria Regional de Educação (DRE)")
+
+    with st.expander("ℹ️ Como interpretar este gráfico"):
+        st.markdown("""**O que mostra:** Um gráfico de barras ordenadas que apresenta o saldo médio do "Efeito-Escola" (resíduo preditivo) para cada uma das Diretorias Regionais de Educação (DRE) da cidade de São Paulo.
+
+**Utilidade:** Facilita a análise comparativa entre as diferentes regiões da cidade, permitindo identificar quais diretorias estão conseguindo, em média, superar mais os desafios socioeconômicos territoriais.""")
+
     df_dre_summary = df.groupby('DRE').agg({
         'ID_ESCOLA': 'count',
         'VL_OBSERVADO_2023': 'mean',
@@ -1092,6 +1113,11 @@ with tab_dre:
     # 4. Heatmap de Indicadores (10 indicadores acionáveis nas colunas, escolas nas linhas)
     st.markdown("### 🗺️ Heatmap de Indicadores Pedagógicos e Comunitários por Escola")
     st.caption("Adesão percentual aos 10 fatores acionáveis: Escala de Vermelho (baixa adesão) a Verde (alta adesão)")
+
+    with st.expander("ℹ️ Como interpretar este gráfico"):
+        st.markdown("""**O que mostra:** Uma matriz visual de dupla entrada que cruza as escolas de uma determinada DRE com a adesão percentual aos 10 fatores acionáveis. Utiliza uma escala cromática que vai do vermelho (baixa adesão) ao verde (alta adesão).
+
+**Utilidade:** Permite à gestão regional detectar instantaneamente quais unidades escolares apresentam maiores vulnerabilidades e quais fatores específicos necessitam de prioridade no suporte pedagógico.""")
 
     indicadores_10 = [
         ('PC_ROTINA_ESTUDO', 'Rotina Estudos'),
